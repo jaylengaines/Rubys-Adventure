@@ -26,8 +26,9 @@ public class PlayerController : MonoBehaviour
 
     //variables for Health system
     public int maxHealth = 5;
-    public int health {get {return currentHealth;}}
     int currentHealth;
+    public int health {get {return currentHealth;}}
+    
     
     
     
@@ -37,12 +38,14 @@ public class PlayerController : MonoBehaviour
         MoveAction.Enable();
         launchAction.Enable();
         launchAction.performed += Launch;
+         
+        talkAction.Enable();
+        talkAction.performed += FindFriend;
+        
         rigidbody2d = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         
         currentHealth = maxHealth;
-
-        animator = GetComponent<Animator>();
-        talkAction.performed += FindFriend;
     }
    
     // Update is called once per frame
@@ -59,16 +62,21 @@ public class PlayerController : MonoBehaviour
         {
             damageCooldown -= Time.deltaTime;
             if (damageCooldown<0)
-            {
-                isInvincible = false;
-            }
+            isInvincible = false;
+            
         }
         animator.SetFloat("Look X", moveDirection.x);
         animator.SetFloat("Look Y", moveDirection.y);
         animator.SetFloat("Speed", move.magnitude);
     }
-    public void ChangeHealth (int amount)
+    
+    void FixedUpdate()
     {
+        Vector2 position = (Vector2)rigidbody2d.position + move * speed *Time.deltaTime;
+        rigidbody2d.MovePosition(position);
+    }
+    public void ChangeHealth (int amount)
+    { 
         if (amount <0)
         {
             if (isInvincible)
@@ -79,14 +87,12 @@ public class PlayerController : MonoBehaviour
             damageCooldown = timeInvincible;
             animator.SetTrigger("Hit");
         }
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+       currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
      UIHandler.instance.SetHealthValue(currentHealth / (float)maxHealth);
     }
-    void FixedUpdate()
-    {
-        Vector2 position = (Vector2)rigidbody2d.position + move * speed *Time.deltaTime;
-        rigidbody2d.MovePosition(position);
-    }
+
+
+
    void Launch (InputAction.CallbackContext context)
    {
     GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);

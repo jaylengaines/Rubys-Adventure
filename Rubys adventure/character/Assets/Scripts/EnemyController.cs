@@ -10,6 +10,7 @@ public class EnemyController : MonoBehaviour
     public bool vertical;
     public float speed;
     public float changeTime = 3.0f;
+    public ParticleSystem smokeEffect;
     
     //Pirvate Variables
     Rigidbody2D rigidbody2d;
@@ -60,9 +61,10 @@ public class EnemyController : MonoBehaviour
         rigidbody2d.MovePosition(position);
         
     }
-    void OnCollisionEnter2d(Collision2D other)
+    void OnTriggerEnter2d(Collision2D other)
     {
         PlayerController player = other.gameObject.GetComponent<PlayerController>();
+        
         if (player != null)
         {
             player.ChangeHealth(-1);
@@ -72,8 +74,9 @@ public class EnemyController : MonoBehaviour
     public void Fix()
     {
         aggressive = false;
-        rigidbody2d.simulated=false;
+        GetComponent<Rigidbody2D>().simulated=false;
         animator.SetTrigger("Fixed");
+        smokeEffect.Stop();
     }
 
 }
