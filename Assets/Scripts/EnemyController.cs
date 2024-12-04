@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    AudioSource audioSource;
     bool aggressive = true;
     Animator animator;
     // Public Variables
@@ -22,8 +23,9 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
+        
         GameObject rubyControllerObject = GameObject.FindWithTag("RubyController"); //this line of code finds the RubyController script by looking for a "RubyController" tag on Ruby
-
+        audioSource = GetComponent<AudioSource>();
         if (rubyControllerObject != null)
 
         {
@@ -44,6 +46,13 @@ public class EnemyController : MonoBehaviour
         rigidbody2d = GetComponent<Rigidbody2D>();
         timer = changeTime;
         animator = GetComponent<Animator>();
+
+       
+    }
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 
     // Update is called once per frame
@@ -101,8 +110,8 @@ public class EnemyController : MonoBehaviour
         if (playerController != null)
         {
                 playerController.ChangeScore(1); //this line of code is increasing Ruby's health by 1!
-                
-            
+                audioSource.Stop();
+    
         }
     }
      

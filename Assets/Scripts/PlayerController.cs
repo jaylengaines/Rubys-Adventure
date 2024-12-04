@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    //Variables for audio
+    AudioSource audioSource;
+    public AudioClip HitClip;
+    public AudioClip Throwclip;
     
     public InputAction talkAction;
     //Variables for projectiles
@@ -56,8 +60,10 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         
         currentHealth = maxHealth;
+        audioSource = GetComponent<AudioSource>();
+
     }
-   
+  
     // Update is called once per frame
     void Update()
     {
@@ -119,15 +125,22 @@ public class PlayerController : MonoBehaviour
             GameObject DamageParticles = Instantiate(DamagePrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
 
             animator.SetTrigger("Hit");
+            audioSource.PlayOneShot(HitClip);
             
         }
-       
+   
         if (amount >0)
         {
             Instantiate(HealthPrefab, rigidbody2d.position + Vector2.up * 0.5f, Quaternion.identity);
         }
        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
      UIHandler.instance.SetHealthValue(currentHealth / (float)maxHealth);
+    }
+     
+
+    public void PlaySound(AudioClip clip)
+    {
+        audioSource.PlayOneShot(clip);
     }
 
 
@@ -138,6 +151,7 @@ public class PlayerController : MonoBehaviour
     Projectile projectile = projectileObject.GetComponent<Projectile>();
     projectile.Launch(moveDirection, 300);
     animator.SetTrigger("Launch");
+    audioSource.PlayOneShot(Throwclip);
    }
    void FindFriend(InputAction.CallbackContext context)
 {

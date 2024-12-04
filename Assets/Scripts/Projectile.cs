@@ -5,6 +5,8 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
    Rigidbody2D rigidbody2d;
+   AudioSource audioSource;
+   public AudioClip Throwclip;
 
 
    // Awake is called when the Projectile GameObject is instantiated
@@ -25,6 +27,7 @@ public class Projectile : MonoBehaviour
    public void Launch(Vector2 direction, float force)
   {
        rigidbody2d.AddForce(direction * force);
+       
   }
 
 
